@@ -1,37 +1,28 @@
-import time
-import random
-import shutil
+import time, random, os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-
-def get_driver():
-    chrome_options = Options()
-    chrome_options.add_argument("--headless=new")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    # PAKSA PROXY KE SSH SINGAPORE LU (Port 8081)
-    chrome_options.add_argument('--proxy-server=socks5://127.0.0.1:8081')
-    
-    # Path Chrome di Codespaces
-    chrome_options.binary_location = "/usr/bin/chromium-browser"
-    
-    service = Service(executable_path="/usr/bin/chromedriver")
-    return webdriver.Chrome(service=service, options=chrome_options)
+from webdriver_manager.chrome import ChromeDriverManager
 
 def run_bot():
-    driver = None
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument('--proxy-server=socks5://127.0.0.1:8081')
+    
+    # Render butuh install ini otomatis
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
+    
     try:
-        driver = get_driver()
         driver.get("http://loadtiktok.wuaze.com")
-        print(f"[+] Codespace Gacor: Serangan Masuk! [{time.strftime('%H:%M:%S')}]")
-        time.sleep(random.randint(60, 120)) # Nongkrong lama biar GA nyatet
-    except Exception as e:
-        print(f"[-] Error: {e}")
+        print(f"[+] Render Gacor! [{time.strftime('%H:%M:%S')}]")
+        time.sleep(random.randint(60, 90))
     finally:
-        if driver:
-            driver.quit()
+        driver.quit()
 
 if __name__ == "__main__":
     while True:
         run_bot()
+        
